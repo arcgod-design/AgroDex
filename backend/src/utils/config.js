@@ -25,6 +25,12 @@ export const env = cleanEnv(process.env, {
   HEDERA_OPERATOR_ID: str(),
   HEDERA_OPERATOR_KEY: str({ default: "" }),
   HEDERA_TOPIC_ID: str(),
+  // Network selector. The issue #209 contract: testnet mode still works by
+  // default, and a maintainer can flip to "mainnet" to enable real
+  // transactions. We only allow the two canonical strings — anything else
+  // envalid rejects at boot so we never silently fall through to a
+  // half-initialised client.
+  HEDERA_NETWORK: str({ default: "testnet" }),
   MIRROR_NODE_URL: str({ default: "https://testnet.mirrornode.hedera.com" }),
   GEMINI_API_KEY: str(),
   PORT: num({ default: 4000 }),

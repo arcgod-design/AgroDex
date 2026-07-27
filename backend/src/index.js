@@ -7,7 +7,8 @@ import healthRoutes from "./routes/health.js";
 import aiRoutes from "./routes/ai.js";
 import fraudRoutes from "./routes/fraud.js";
 import accountRoutes from "./routes/account.js";
-import { getHederaClient } from "./hederaClient.js";
+import gasEstimateRoutes from "./routes/gasEstimate.js";
+import { getHederaClient, isMainnet } from "./hederaClient.js";
 import { generalLimiter } from "./middleware/rateLimiter.js";
 import { logger } from "./middleware/logger.js";
 import { startCronJobs } from "./services/cron.js";
@@ -45,6 +46,7 @@ app.use("/api", apiRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/fraud", fraudRoutes);
 app.use("/api/account", accountRoutes);
+app.use("/api", gasEstimateRoutes);
 
 app.get("/", (req, res) => {
   res.json({
@@ -85,6 +87,21 @@ app.use((err, req, res, next) => {
 
 try {
   getHederaClient();
+  // Issue #209: loudly announce when we're signing real mainnet transactions.
+  // This surfaces in server logs so an operator can confirm at a glance
+  // whether the deployment is on the real ledger or still in testnet mode.
+  if (isMainnet()) {
+    console.warn(
+      "⚠️  HEDERA_NETWORK=mainnet — Hedera client is signing REAL transactions for account " +
+        env.HEDERA_OPERATOR_ID +
+        ". Real HBAR will be spent on every batch registration.",
+    );
+  } else {
+    console.log(
+      "🧪 Hedera client running in TESTNET mode (HEDERA_NETWORK=testnet). Set " +
+        "HEDERA_NETWORK=mainnet to enable real transactions (see issue #209).",
+    );
+  }
 } catch (error) {
   console.error("Failed to initialize Hedera client:", error.message);
   process.exit(1);
