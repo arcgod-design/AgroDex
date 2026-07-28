@@ -1,5 +1,3 @@
-test
-
 <div align="center">
 
 <h1>🌾 AgroDex 🌾</h1>
