@@ -39,6 +39,7 @@ import {
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ContextHelp } from "@/components/help";
 import {
   getSupplyChainRiskAssessment,
   type HeatmapCell,
@@ -112,8 +113,11 @@ function RiskScoreCards({ cards }: { cards: RiskScoreCard[] }) {
             <CardHeader className="space-y-0 pb-3">
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <CardTitle className="text-sm font-semibold text-muted-foreground">
+                  <CardTitle className="text-sm font-semibold text-muted-foreground flex items-center gap-1.5">
                     {card.label}
+                    {card.id === "fraud" && (
+                      <ContextHelp helpId="risk.riskScore" size={12} side="right" />
+                    )}
                   </CardTitle>
                   <div className="mt-2 flex items-end gap-2">
                     <span className="text-3xl font-extrabold text-foreground">{card.score}</span>

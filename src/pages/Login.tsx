@@ -43,6 +43,7 @@ import { motion } from "framer-motion";
 import { Helmet } from "react-helmet-async";
 import logoUrl from "@/assets/agritrust-logo.png";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { ContextHelp } from "@/components/help";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -84,9 +85,20 @@ export default function Login() {
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError(null);
-    setAuthSuccess(null);
-    setAuthLoading(true);
+  setAuthSuccess(null);
+  setAuthLoading(true);
 
+  // Custom Frontend Password Validation for Sign Up
+  if (isSignUp) {
+    const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
+    if (password.length < 6 || !specialCharRegex.test(password)) {
+      setAuthError("Password must be at least 6 characters and contain a special character.");
+      setAuthLoading(false);
+      return;
+    }
+  }
+
+  
     try {
       if (isSignUp) {
         const { data, error } = await supabase.auth.signUp({
@@ -342,9 +354,10 @@ export default function Login() {
                       <div className="space-y-1.5 group">
                         <Label
                           htmlFor="email"
-                          className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider group-focus-within:text-emerald-600 dark:group-focus-within:text-emerald-400 transition-colors"
+                          className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider group-focus-within:text-emerald-600 dark:group-focus-within:text-emerald-400 transition-colors flex items-center gap-1.5"
                         >
                           {t('auth.email')}
+                          <ContextHelp helpId="auth.email" size={12} side="right" />
                         </Label>
                         <div className="relative">
                           <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
@@ -364,9 +377,10 @@ export default function Login() {
                       <div className="space-y-1.5 group">
                         <Label
                           htmlFor="password"
-                          className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider group-focus-within:text-emerald-600 dark:group-focus-within:text-emerald-400 transition-colors"
+                          className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider group-focus-within:text-emerald-600 dark:group-focus-within:text-emerald-400 transition-colors flex items-center gap-1.5"
                         >
                           {t('auth.password')}
+                          <ContextHelp helpId="auth.password" size={12} side="right" />
                         </Label>
                         <div className="relative">
                           <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">

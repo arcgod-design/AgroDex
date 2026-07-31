@@ -47,25 +47,71 @@ export function loadPrivateKeyAny(raw) {
 }
 
 /**
- * Create and configure Hedera Testnet client
+ * Create and configure a Hedera client for the configured network.
+ *
+ * Network selection honours `env.HEDERA_NETWORK`:
+ *   - `"testnet"` (default, backwards-compatible) → `Client.forTestnet()`
+ *   - `"mainnet"` → `Client.forMainnet()`
+ *
+ * The testnet default preserves all existing callers' behaviour — this PR
+ * does not delete the testnet mode, per the issue #209 contract.
+ *
  * @param {string} operatorId - Account ID string (e.g., "0.0.12345")
  * @param {string} operatorKey - Private key string (any supported format)
+ * @param {("testnet"|"mainnet")} [network] - Override `env.HEDERA_NETWORK`.
+ *   Accepts any (?) string for forward-compat with future networks, but
+ *   everything other than `"testnet"` / `"mainnet"` throws an explicit
+ *   configuration error so an accidental typo doesn't silently route
+ *   testnet traffic through mainnet (or vice versa).
  * @returns {Client} Configured Hedera client
  */
-export function makeHederaClient(operatorId, operatorKey) {
+export function makeHederaClient(operatorId, operatorKey, network) {
   try {
     const accountId = AccountId.fromString(operatorId);
     const privateKey = loadPrivateKeyAny(operatorKey);
 
-    const client = Client.forTestnet();
+    const selectedNetwork = (network ?? env.HEDERA_NETWORK ?? 'testnet').toLowerCase();
+    let client;
+    if (selectedNetwork === 'testnet') {
+      client = Client.forTestnet();
+    } else if (selectedNetwork === 'mainnet') {
+      client = Client.forMainnet();
+    } else {
+      throw new Error(
+        `Unknown Hedera network "${selectedNetwork}". ` +
+          `Set HEDERA_NETWORK to "testnet" or "mainnet".`,
+      );
+    }
     client.setOperator(accountId, privateKey);
 
-    console.log(`✅ Hedera client initialized for account ${operatorId}`);
+    console.log(
+      `✅ Hedera client initialized for account ${operatorId} on ${selectedNetwork}`,
+    );
     return client;
   } catch (error) {
     console.error('❌ Failed to initialize Hedera client:', error.message);
     throw error;
   }
+}
+
+/**
+ * Returns the network mode the singleton client is (or will be) configured
+ * with. Useful for logging / API responses without re-reading `env`.
+ *
+ * @returns {("testnet"|"mainnet")}
+ */
+export function getActiveNetwork() {
+  const n = (env.HEDERA_NETWORK ?? 'testnet').toLowerCase();
+  return n === 'mainnet' ? 'mainnet' : 'testnet';
+}
+
+/**
+ * Is the singleton client pointed at Hedera mainnet?
+ *
+ * @returns {boolean}
+ */
+export function isMainnet() {
+  return getActiveNetwork() === 'mainnet';
 }
 
 /**

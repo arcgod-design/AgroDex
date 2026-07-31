@@ -340,10 +340,10 @@ CREATE INDEX idx_batches_deleted_at ON batches(deleted_at);
 
 ## 🗺️ Roadmap
 
-- [v] Q4 2025 - Testnet Prototype
-- [v] Q1 2026 - Pilot with Co-ops
-- [v] Q2 2026 - HashConnect Wallet Integration
-- [] Q3 2026- Mainnet Launch & Scaling
+- [x] Q4 2025 - Testnet Prototype
+- [x] Q1 2026 - Pilot with Co-ops
+- [x] Q2 2026 - HashConnect Wallet Integration
+- [x] Q3 2026- Mainnet Launch & Scaling
 
 ---
 

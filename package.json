@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "prebuild": "cp -f contracts/interfaces/metadata.json src/metadata.json || true",
+    "prebuild": "node -e \"try { require('fs').copyFileSync('contracts/interfaces/metadata.json', 'src/metadata.json') } catch (e) {}\"",
     "build": "vite build",
     "lint": "eslint src",
     "postcss:check": "postcss src/**/*.css --no-map --dry-run > /dev/null",

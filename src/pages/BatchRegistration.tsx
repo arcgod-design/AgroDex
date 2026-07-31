@@ -47,6 +47,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Helmet } from "react-helmet-async";
 import { CopyButton } from "@/components/CopyButton";
+import { ContextHelp, StepGuide } from "@/components/help";
 
 export default function BatchRegistration() {
   const [productName, setProductName] = useState("");
@@ -203,6 +204,14 @@ export default function BatchRegistration() {
             </CardDescription>
           </CardHeader>
           <CardContent>
+            {/* Step guidance banner */}
+            <StepGuide
+              currentStep={1}
+              totalSteps={2}
+              stepTitle="Fill in batch details"
+              hint="Only mandatory fields are required. Hover or tap the (?) icons for additional help."
+              className="mb-6"
+            />
             <form onSubmit={handleVerifyAndShowModal} className="space-y-6">
               <div className="space-y-2">
                 <Label
@@ -211,6 +220,7 @@ export default function BatchRegistration() {
                 >
                   <Package className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                   Product Name
+                  <ContextHelp helpId="registration.productName" size={13} />
                 </Label>
                 <Input
                   id="productName"
@@ -229,6 +239,7 @@ export default function BatchRegistration() {
                 >
                   <Hash className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                   Harvest Batch Identifier
+                  <ContextHelp helpId="registration.harvestBatch" size={13} />
                 </Label>
                 <Input
                   id="harvestBatch"
@@ -248,6 +259,7 @@ export default function BatchRegistration() {
                   >
                     <Hash className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                     Quantity
+                    <ContextHelp helpId="registration.quantity" size={13} />
                   </Label>
                   <Input
                     id="quantity"
@@ -266,6 +278,7 @@ export default function BatchRegistration() {
                   >
                     <Package className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                     Unit
+                    <ContextHelp helpId="registration.unit" size={13} />
                   </Label>
                   <Input
                     id="unit"
@@ -285,6 +298,7 @@ export default function BatchRegistration() {
                 >
                   <MapPin className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                   Origin Location
+                  <ContextHelp helpId="registration.origin" size={13} />
                 </Label>
                 <Input
                   id="origin"
@@ -303,6 +317,7 @@ export default function BatchRegistration() {
                 >
                   <Calendar className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                   Harvest Date
+                  <ContextHelp helpId="registration.harvestDate" size={13} />
                 </Label>
                 <Input
                   id="harvestDate"
@@ -321,6 +336,7 @@ export default function BatchRegistration() {
                 >
                   <FileText className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                   Additional Product Metadata
+                  <ContextHelp helpId="registration.metadata" size={13} />
                 </Label>
                 <Textarea
                   id="metadata"
